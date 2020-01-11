@@ -51,6 +51,10 @@
           let app = firebase.app();
           let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
           document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
+          let databaseUserRef = firebase.database().ref('users');
+          databaseUserRef.on('value', function(snapshot) {
+            parseUserDataFrom(snapshot.val())
+          });
         } catch (e) {
           console.error(e);
           document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
@@ -59,6 +63,16 @@
         google.charts.load('current', {packages: ['corechart', 'line']});
         google.charts.setOnLoadCallback(drawTrendlines);
       });
+
+      function parseUserDataFrom(databaseUsersObject) {
+        let userCount = Object.keys(databaseUsersObject).length;
+        console.log(databaseUsersObject);
+        console.log(userCount);
+      }
+
+      function parseProgressDataFrom(databaseProgressObject) {
+
+      }
 
       function drawTrendlines() {
         var data = new google.visualization.DataTable();
