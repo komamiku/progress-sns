@@ -18,7 +18,7 @@
     <style media="screen">
       body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
       #message { background: white; margin: 50px 50px 50px 50px; padding: 32px 24px; border-radius: 3px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: #ffa100; margin: 0 0 16px;}
+      #message h1 { font-size: 28px; font-weight: 300; color: #ffa100; margin: 0 0 16px;}
       #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
       #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
       @media (max-width: 600px) {
@@ -30,11 +30,13 @@
   <body>
     <div id="message">
       <h1>Welcome to Progress SNS</h1>
-      <div id="chart_div"></div>
+      <canvas id="canvas"></canvas>
     </div>
     <p id="load">Firebase SDK Loading&hellip;</p>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
@@ -53,15 +55,13 @@
           document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
           let databaseUserRef = firebase.database().ref('users');
           databaseUserRef.on('value', function(snapshot) {
-            parseUserDataFrom(snapshot.val())
+            parseUserDataFrom(snapshot.val());
+            drawChart();
           });
         } catch (e) {
           console.error(e);
           document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
         }
-
-        google.charts.load('current', {packages: ['corechart', 'line']});
-        google.charts.setOnLoadCallback(drawTrendlines);
       });
 
       function parseUserDataFrom(databaseUsersObject) {
@@ -74,50 +74,120 @@
 
       }
 
-      function drawTrendlines() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('number', 'X');
-        data.addColumn('number', 'Student 1');
-        data.addColumn('number', 'Student 2');
+      function drawChart() {
+          var ctx = document.getElementById('canvas').getContext('2d');
+          ctx.canvas.height = window.innerHeight * 0.6;
+          window.myLine = new Chart(ctx, getChartConfig());
+      }
 
-        data.addRows([
-          [0, 0, 0],    [1, 10, 5],   [2, 23, 15],  [3, 17, 9],   [4, 18, 10],  [5, 9, 5],
-          [6, 11, 3],   [7, 27, 19],  [8, 33, 25],  [9, 40, 32],  [10, 32, 24], [11, 35, 27],
-          [12, 30, 22], [13, 40, 32], [14, 42, 34], [15, 47, 39], [16, 44, 36], [17, 48, 40],
-          [18, 52, 44], [19, 54, 46], [20, 42, 34], [21, 55, 47], [22, 56, 48], [23, 57, 49],
-          [24, 60, 52], [25, 50, 42], [26, 52, 44], [27, 51, 43], [28, 49, 41], [29, 53, 45],
-          [30, 55, 47], [31, 60, 52], [32, 61, 53], [33, 59, 51], [34, 62, 54], [35, 65, 57],
-          [36, 62, 54], [37, 58, 50], [38, 55, 47], [39, 61, 53], [40, 64, 56], [41, 65, 57],
-          [42, 63, 55], [43, 66, 58], [44, 67, 59], [45, 69, 61], [46, 69, 61], [47, 70, 62],
-          [48, 72, 64], [49, 68, 60], [50, 66, 58], [51, 65, 57], [52, 67, 59], [53, 70, 62],
-          [54, 71, 63], [55, 72, 64], [56, 73, 65], [57, 75, 67], [58, 70, 62], [59, 68, 60],
-          [60, 64, 56], [61, 60, 52], [62, 65, 57], [63, 67, 59], [64, 68, 60], [65, 69, 61],
-          [66, 70, 62], [67, 72, 64], [68, 75, 67], [69, 80, 72]
-        ]);
+      function getChartConfig() {
+        var timeFormat = 'YYYY/MM/DD HH:mm';
 
-        var options = {
-          margin: {
-            top: 10,
-            bottom: 10,
-            left: 10,
-            right: 10
+        function newDate(days) {
+          return moment().add(days, 'd').toDate();
+        }
+
+        function newDateString(days) {
+          return moment().add(days, 'd').format(timeFormat);
+        }
+
+        const config = {
+          type: 'line',
+          data: {
+            datasets: [{
+              label: 'Student 1',
+              borderColor: "#e91e63",
+              backgroundColor: "#e91e638a",
+              fill: false,
+              data: [{
+                x: newDateString(0),
+                y: 10
+              }, {
+                x: newDateString(5),
+                y: 14
+              }, {
+                x: newDateString(10),
+                y: 29
+              }, {
+                x: newDateString(20),
+                y: 40
+              }],
+            }, {
+              label: 'Student 2',
+              borderColor: "#03a9f4",
+              backgroundColor: "#03a9f48a",
+              fill: false,
+              data: [{
+                x: newDateString(0),
+                y: 0
+              }, {
+                x: newDateString(10),
+                y: 2
+              }, {
+                x: newDateString(18),
+                y: 30
+              }, {
+                x: newDateString(20),
+                y: 40
+              }],
+            }, {
+              label: 'Studnet 3',
+              borderColor: "#cddc39",
+              backgroundColor: "#cddc398a",
+              fill: false,
+              data: [{
+                x: newDateString(0),
+                y: 20
+              }, {
+                x: newDateString(10),
+                y: 25
+              }, {
+                x: newDateString(18),
+                y: 30
+              }, {
+                x: newDateString(20),
+                y: 40
+              }],
+            }]
           },
-          fontSize: 16,
-          height: 400,
-          hAxis: {
-            title: 'Day',
-          },
-          vAxis: {
-            title: 'The number of pages',
-          },
-          colors: ['#AB0D06', '#007329'],
-          legend: {
-            position: 'top'
+          options: {
+            scales: {
+              xAxes: [{
+                type: 'time',
+                time: {
+                  parser: timeFormat,
+                  tooltipFormat: 'YY/MM/DD HH:mm',
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Date',
+                  fontSize: 24
+                },
+                ticks: {
+                  min: '2020/01/07 00:00',
+                  max: '2020/02/04 14:00',
+                  fontSize: 16
+                }
+              }],
+              yAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'The number of pages',
+                  fontSize: 24
+                },
+                ticks: {
+                  min: 0,
+                  max: 50,
+                  fontSize: 16
+                }
+              }]
+            },
+            responsive: true,
+            maintainAspectRatio: false
           }
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
+        return config;
       }
     </script>
   </body>
