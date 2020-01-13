@@ -1,25 +1,27 @@
 version: 2
 jobs:
-  deploy:
+  build:
     docker:
-      - image: circleci/node:10.7
+      - image: circleci/node:10
     steps:
       - run:
-          name: npm install
-          command: npm i
+          name: 'npm version check'
+          command: npm --version
       - run:
-          name: build
-          command: npm run build
+          name: 'Node.js version check'          
+          command: node --version
       - checkout
       - run:
-          name: deploy to Firebase Hosting
-          command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN
-
+          name: 'Install Firebase CLI'
+          command: npm install --save-dev firebase-tools
+      - run:
+          name: 'Deploy to Hosting'
+          command: ./node_modules/.bin/firebase deploy --token="$FIREBASE_TOKEN"
 workflows:
   version: 2
-  deploy:
+  build_and_deploy:
     jobs:
-      - deploy:
+      - build:
           filters:
             branches:
               only: master
