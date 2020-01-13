@@ -45,8 +45,7 @@
           document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
           let databaseUserRef = firebase.database().ref('users');
           databaseUserRef.on('value', function(snapshot) {
-            parseUserDataFrom(snapshot.val());
-            drawChart();
+            drawChart(convertProgressData(snapshot.val()));
           });
         } catch (e) {
           console.error(e);
@@ -54,14 +53,14 @@
         }
       });
 
-      function parseUserDataFrom(databaseUsersObject) {
-        let userCount = Object.keys(databaseUsersObject).length;
-        console.log(databaseUsersObject);
-        console.log(userCount);
-      }
-
-      function parseProgressDataFrom(databaseProgressObject) {
-
+      function convertProgressData(databaseObject) {
+        return Object.entries(databaseObject).map(([key, value]) => {
+          return {
+            label: value.name,
+            data: value.progress,
+            color: value.color
+          };
+        })
       }
 
       // chart drawer
@@ -78,40 +77,6 @@
       }
 
       function getChartData(progressDataArray) {
-        const borderColors = ['#e91e63', '#03a9f4', '#cddc39'];
-        const backgroundColors = borderColors.map(color => color + '8a')
-
-        progressDataArray = [
-          {
-            label: 'student 1',
-            data: {
-              "1577982471" : 26,
-              "1578222000" : 26,
-              "1578366480" : 27,
-              "1578395280" : 28,
-              "1578407700" : 29,
-              "1578587271" : 30,
-              "1578614095" : 30
-            },
-            color: borderColors[0]
-          },
-          {
-            label : "student 2",
-            data : {
-              "1578395280" : 22,
-              "1578538800" : 24
-            },
-            color: borderColors[1]
-          },
-          {
-            label : "student 3",
-            data : {
-              "1578395280" : 15
-            },
-            color: borderColors[2]
-          }
-        ];
-
         const data = {
           datasets: progressDataArray.map(element => {
             return {
