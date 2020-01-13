@@ -66,26 +66,29 @@
       }
 
       function getChartData(progressDataArray) {
-        const data = {
+        return {
           datasets: progressDataArray.map(element => {
+            let plotData = []
+            if (element.data) {
+              plotData = Object.keys(element.data).map(unixtime => {
+                const date = moment.unix(unixtime);
+                return {
+                  x: date.format(timeFormat()),
+                  y: element.data[unixtime]
+                };
+              });
+            }
+
             return {
               label: element.label,
               borderColor: element.color,
               backgroundColor: element.color + '8a',
               fill: false,
               lineTension: 0,
-              data: Object.keys(element.data).map(unixtime => {
-                const date = moment.unix(unixtime);
-                return {
-                  x: date.format(timeFormat()),
-                  y: element.data[unixtime]
-                };
-              }),
+              data: plotData,
             };
           })
         };
-
-        return data;
       }
 
       function getChartOption() {
