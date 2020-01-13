@@ -35,8 +35,8 @@
     <p id="load">Firebase SDK Loading&hellip;</p>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.min.js'></script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         try {
@@ -95,10 +95,37 @@
             };
           })
         };
+
         return data;
       }
 
       function getChartOption() {
+        const annotations = [
+          {
+            type: 'line',
+            id: 'vline0',
+            mode: 'vertical',
+            scaleID: 'x-axis-0',
+            value: currentDateString(),
+            borderColor: '#ff5722',
+            borderWidth: 1,
+          },
+          {
+            type: 'box',
+            id: 'box1',
+            mode: 'horizontal',
+            xScaleID: 'x-axis-0',
+            yScaleID: 'y-axis-0',
+            xMin: '2020/01/01 00:00',
+            xMax: '2020/02/04 14:00',
+            yMin: 40,
+            yMax: 46,
+            backgroundColor: '#f443368a',
+            borderColor: '#f4433600',
+            borderWidth: 0,
+          }
+        ];
+
         const option = {
           scales: {
             xAxes: [{
@@ -132,19 +159,20 @@
             }]
           },
           responsive: true,
-          maintainAspectRatio: false
+          maintainAspectRatio: false,
+          annotation: {
+            drawTime: 'afterDatasetsDraw',
+            annotations: annotations
+          }
         };
+
         return option;
       }
 
       // util function
 
-      function newDate(days) {
-        return moment().add(days, 'd').toDate();
-      }
-
-      function newDateString(days) {
-        return moment().add(days, 'd').format(timeFormat());
+      function currentDateString() {
+        return moment().format(timeFormat());
       }
 
       function timeFormat() {
