@@ -13,7 +13,7 @@
     <style media="screen">
       body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
       #message { background: white; margin: 50px 50px 50px 50px; padding: 32px 24px; border-radius: 3px; }
-      #message h1 { font-size: 28px; font-weight: 300; color: #ffa100; margin: 0 0 16px;}
+      #message h1 { font-size: 28px; font-weight: 300; color: #e91e63; margin: 0 0 16px;}
       #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
       @media (max-width: 600px) {
         body, #message { margin-top: 0; background: white; box-shadow: none; }
@@ -109,10 +109,24 @@
             xMax: '2020/02/04 14:00',
             yMin: 40,
             yMax: 46,
-            backgroundColor: '#f443368a',
-            borderColor: '#f4433600',
+            backgroundColor: '#f8bbd08a',
+            borderColor: '#ffffff00',
             borderWidth: 0,
-          }
+          },
+          {
+            type: 'box',
+            id: 'box2',
+            mode: 'horizontal',
+            xScaleID: 'x-axis-0',
+            yScaleID: 'y-axis-0',
+            xMin: '2020/01/01 00:00',
+            xMax: '2020/02/04 14:00',
+            yMin: 19.5,
+            yMax: 20.5,
+            backgroundColor: '#f8bbd08a',
+            borderColor: '#ffffff00',
+            borderWidth: 0,
+          },
         ];
 
         const option = {
