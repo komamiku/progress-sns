@@ -71,69 +71,64 @@
           ctx.canvas.height = window.innerHeight * 0.6;
           const config = {
             type: 'line',
-            data: getChartData(),
+            data: getChartData(progressDataArray),
             options: getChartOption()
-          }
+          };
           window.myLine = new Chart(ctx, config);
       }
 
       function getChartData(progressDataArray) {
+        const borderColors = ['#e91e63', '#03a9f4', '#cddc39'];
+        const backgroundColors = borderColors.map(color => color + '8a')
+
+        progressDataArray = [
+          {
+            label: 'student 1',
+            data: {
+              "1577982471" : 26,
+              "1578222000" : 26,
+              "1578366480" : 27,
+              "1578395280" : 28,
+              "1578407700" : 29,
+              "1578587271" : 30,
+              "1578614095" : 30
+            },
+            color: borderColors[0]
+          },
+          {
+            label : "student 2",
+            data : {
+              "1578395280" : 22,
+              "1578538800" : 24
+            },
+            color: borderColors[1]
+          },
+          {
+            label : "student 3",
+            data : {
+              "1578395280" : 15
+            },
+            color: borderColors[2]
+          }
+        ];
+
         const data = {
-          datasets: [{
-            label: 'Student 1',
-            borderColor: "#e91e63",
-            backgroundColor: "#e91e638a",
-            fill: false,
-            data: [{
-              x: newDateString(0),
-              y: 10
-            }, {
-              x: newDateString(5),
-              y: 14
-            }, {
-              x: newDateString(10),
-              y: 29
-            }, {
-              x: newDateString(20),
-              y: 40
-            }],
-          }, {
-            label: 'Student 2',
-            borderColor: "#03a9f4",
-            backgroundColor: "#03a9f48a",
-            fill: false,
-            data: [{
-              x: newDateString(0),
-              y: 0
-            }, {
-              x: newDateString(10),
-              y: 2
-            }, {
-              x: newDateString(18),
-              y: 30
-            }, {
-              x: newDateString(20),
-              y: 40
-            }],
-          }, {
-            label: 'Studnet 3',
-            borderColor: "#cddc39",
-            backgroundColor: "#cddc398a",
-            fill: false,
-            data: [{
-              x: newDateString(0),
-              y: 20
-            }, {
-              x: newDateString(10),
-              y: 25
-            }, {
-              x: newDateString(18),
-              y: 30
-            }, {
-              x: newDateString(20),
-              y: 40
-            }],
-          }]
+          datasets: progressDataArray.map(element => {
+            return {
+              label: element.label,
+              borderColor: element.color,
+              backgroundColor: element.color + '8a',
+              fill: false,
+              lineTension: 0,
+              data: Object.keys(element.data).map(unixtime => {
+                const date = moment.unix(unixtime);
+                return {
+                  x: date.format(timeFormat()),
+                  y: element.data[unixtime]
+                };
+              }),
+            };
+          })
         };
         return data;
       }
@@ -153,7 +148,7 @@
                 fontSize: 24
               },
               ticks: {
-                min: '2020/01/07 00:00',
+                min: '2020/01/01 00:00',
                 max: '2020/02/04 14:00',
                 fontSize: 16
               }
@@ -188,7 +183,7 @@
       }
 
       function timeFormat() {
-        return 'YYYY/MM/DD HH:mm'
+        return 'YYYY/MM/DD HH:mm';
       }
     </script>
   </body>
