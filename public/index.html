@@ -92,6 +92,11 @@
       }
 
       function getChartOption() {
+        const xMin = '2020/01/01 00:00';
+        const xMax = '2020/02/11 00:00';
+        const xBachelor = '2020/02/10 14:00';
+        const xMaster = '2020/02/04 14:00';
+
         const annotations = [
           {
             type: 'line',
@@ -99,7 +104,27 @@
             mode: 'vertical',
             scaleID: 'x-axis-0',
             value: currentDateString(),
-            borderColor: '#ff5722',
+            borderColor: '#e91e63',
+            borderWidth: 1,
+          },
+          {
+            type: 'line',
+            id: 'vline1',
+            mode: 'vertical',
+            scaleID: 'x-axis-0',
+            value: xMaster,
+            borderColor: '#e91e63',
+            borderDash: [5, 5],
+            borderWidth: 1,
+          },
+          {
+            type: 'line',
+            id: 'vline2',
+            mode: 'vertical',
+            scaleID: 'x-axis-0',
+            value: xBachelor,
+            borderColor: '#e91e63',
+            borderDash: [5, 5],
             borderWidth: 1,
           },
           {
@@ -108,8 +133,8 @@
             mode: 'horizontal',
             xScaleID: 'x-axis-0',
             yScaleID: 'y-axis-0',
-            xMin: '2020/01/01 00:00',
-            xMax: '2020/02/04 14:00',
+            xMin: xMin,
+            xMax: xMax,
             yMin: 39.5,
             yMax: 45.5,
             backgroundColor: '#f8bbd08a',
@@ -122,8 +147,8 @@
             mode: 'horizontal',
             xScaleID: 'x-axis-0',
             yScaleID: 'y-axis-0',
-            xMin: '2020/01/01 00:00',
-            xMax: '2020/02/04 14:00',
+            xMin: xMin,
+            xMax: xMax,
             yMin: 19.5,
             yMax: 20.5,
             backgroundColor: '#f8bbd08a',
@@ -146,8 +171,8 @@
                 fontSize: 24
               },
               ticks: {
-                min: '2020/01/01 00:00',
-                max: '2020/02/04 14:00',
+                min: xMin,
+                max: xMax,
                 fontSize: 16
               }
             }],
